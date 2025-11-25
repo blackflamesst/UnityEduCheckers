@@ -60,6 +60,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.37f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Settings\CellPaletteSettings.cs" />
     <Compile Include="Assets\Scripts\GameInstaller.cs" />
     <Compile Include="Assets\Scripts\Unit\Unit.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
