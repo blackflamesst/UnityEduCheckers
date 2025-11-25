@@ -114,8 +114,8 @@
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\Bindings\TestFromPrefabResource\Bob.cs" />
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\Bindings\TestFromPrefab\Gorp.cs" />
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\SceneContractTests\Decorators\Scene1Installer.cs" />
-    <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\SceneTests\TestDestructionOrder\Scene1Installer.cs" />
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\Installers\TestMonoInstallers\BarInstaller.cs" />
+    <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\SceneTests\TestDestructionOrder\Scene1Installer.cs" />
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\SceneTests\TestDestructionOrder\ProjectInstaller.cs" />
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\Bindings\TestFromPrefabResource\Norf.cs" />
     <Compile Include="Assets\Plugins\Zenject\OptionalExtras\IntegrationTests\SceneTests\TestDestructionOrder\Scene2Installer.cs" />
