@@ -1,5 +1,5 @@
 using System;
-using Checkers.Unit;
+using Checkers.Units;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +12,9 @@ namespace Checkers
         [SerializeField]
         private MeshRenderer _select;
 
-        public Unit unit { get; set; }
+        public Unit CurrentUnit { get; set; }
+
+        public Vector3 Coordinate { get; set; }
 
         public event Action<Cell> OnPointerClickEvent;
 

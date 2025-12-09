@@ -21,6 +21,10 @@ namespace Checkers.Settings
         [field: SerializeField]
         [field: Tooltip("Клетка доступная для передвижения и атаки")]
         public Material MoveAndAttackCell { get; private set; }
+
+        [field: SerializeField]
+        [field: Tooltip("Клетка доступная для передвижения и атаки")]
+        public Material ConfirmCell { get; private set; }
     }
 }
 
