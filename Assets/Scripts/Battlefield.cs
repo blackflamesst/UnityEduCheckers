@@ -17,7 +17,6 @@ namespace Checkers
 {
     public class Battlefield : IDisposable
     {
-        private IGameplayCommand _command;
         private readonly CellPaletteSettings _palettes;
         private readonly ISharedData _data;
 
@@ -42,22 +41,24 @@ namespace Checkers
             foreach (var cell in _cells) 
                 cell.ResetSelect();
 
-            if (_data.Destination != null)
+            if (_data.Destination != null && _data.Destination.CurrentCell != null)
                 _data.Destination.CurrentCell.SetSelect(_palettes.SelectCell);
 
             var mat = _data.Status switch
             {
                 GameStatus.Move => _palettes.MoveCell,
                 GameStatus.Attack => _palettes.AttackCell,
+                GameStatus.ConfirmMove => _palettes.ConfirmCell,
+                GameStatus.ConfirmAttack => _palettes.ConfirmCell,
                 _ => default(Material)
             };
 
-            if (mat != null)
-                foreach (var cell in _command.Variants)
+            if (mat != null && _data.Command != null)
+                foreach (var cell in _data.Command.Variants)
                     cell.SetSelect(mat);
 
-            if (_data.Target != null)
-                _data.Destination.CurrentCell.SetSelect(_palettes.ConfirmCell);
+            if (_data.Target != null && _data.Destination != null)
+                _data.Target.SetSelect(_palettes.ConfirmCell);
         }
 
         public Battlefield(SignalBus signal, ISharedData data, CellPaletteSettings palettes)
@@ -111,7 +112,7 @@ namespace Checkers
             {
                 (distance, index) = (float.MaxValue, -1);
                 var position = units[i].transform.position;
-                for (int j = 0,  jMax = units.Length; j < jMax; j++)
+                for (int j = 0,  jMax = positions.Length; j < jMax; j++)
                 {
                     var calc = Vector3.Distance(position, positions[j]);
                     if (calc < distance)

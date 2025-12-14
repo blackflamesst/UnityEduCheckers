@@ -28,28 +28,35 @@ namespace Checkers
     {
         Empty = 0,
 
-        Select = 1,
+        SelectDestination = 1,
 
-        Cancel = 2,
+        // добавился для визуального изменения подсветки клеток, необходимо, чтобы игрок понимал, что он переключился
+        SwitchMode = 2,
 
-        Confirm = 3
+        SelectTarget = 3,
+
+        //Отыгрывание нашего кода
+        VisualisationPeriod = 4,
+
+        // Событие передачи хода другого игроку
+        NewTurn = 5
     }
 
     public enum GameStatus
     {
         Error = 0,
-#region Глобальные состояние: [0 - 9]
-        Lock = 1,
-        Unlock = 2,
-#endregion
 
-#region Управление игрока: [10+]
-        Select = 3,
-        Move = 4,
-        Attack = 5,
-        Confirm = 6, 
-        Cancel = 7
-#endregion
+        Lock = 1,
+        
+        Select = 2,
+        
+        Move = 3,
+        
+        Attack = 4,
+        
+        ConfirmMove = 5,
+        
+        ConfirmAttack = 6
     }
 
     public enum NeighbourType

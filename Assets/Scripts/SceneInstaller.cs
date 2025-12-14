@@ -26,20 +26,15 @@ public class SceneInstaller : MonoInstaller
         _controls.Game.Enable();
         Container.BindInstance(_controls.Game).AsSingle();
 
-        Container.BindInterfacesAndSelfTo<Battlefield>().AsSingle().OnInstantiated<Battlefield>((ctx, battlefield) =>
-        {
-            battlefield.OnCellClicked += CellManagerOnOnCellClicked;
-        });
+        Container.BindInterfacesAndSelfTo<Battlefield>().AsSingle();
+
+        Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<BattleController>().AsSingle();
         //Container.BindInstance(_battlefield).AsSingle();
         Container.BindInstance(_sceneController).AsSingle();
 
         Container.BindInstance(_cellPaletteSettings).AsSingle();
 
-    }
-
-    private void CellManagerOnOnCellClicked(Cell cell)
-    {
-        cell.SetSelect(_cellPaletteSettings.SelectCell);
     }
 
     private void OnDestroy()

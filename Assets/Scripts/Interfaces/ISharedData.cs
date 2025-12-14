@@ -17,6 +17,10 @@ namespace Checkers.Interfaces
         Unit Destination { get; set; }
 
         Cell Target { get; set; }
+
+        IGameplayCommand Command { get; set; }
+
+        Team CurrentTurn { get; set; }
     }
 
 
@@ -27,5 +31,9 @@ namespace Checkers.Interfaces
         public GameStatus Status { get; set; }
         public Unit Destination { get; set; }
         public Cell Target { get; set; }
+
+        public IGameplayCommand Command { get; set; }
+
+        public Team CurrentTurn { get; set; } = Team.Red;
     }
 }

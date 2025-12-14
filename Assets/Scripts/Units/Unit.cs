@@ -14,7 +14,7 @@ namespace Checkers.Units
 
         public Cell CurrentCell { get; set; }
 
-        public void PromoteToKing()
+        public void PromoteToQueen()
         {
             Type = UnitType.Queen;
 

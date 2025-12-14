@@ -70,8 +70,10 @@
     <Compile Include="Assets\Scripts\Managers\InputManager.cs" />
     <Compile Include="Assets\Scripts\Controllers\BattleController.cs" />
     <Compile Include="Assets\Scripts\Primitives.cs" />
+    <Compile Include="Assets\Scripts\Controllers\Commands\MoveCommand.cs" />
     <Compile Include="Assets\Scripts\Controllers\PlayerCommand.cs" />
     <Compile Include="Assets\Scripts\SceneController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\Commands\AttackCommand.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\Controls.cs" />
   </ItemGroup>
