@@ -1,3 +1,4 @@
+using Checkers.Controllers.Commands;
 using Checkers.Units;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,18 +10,16 @@ namespace Checkers.Interfaces
     public interface ISharedData
     {
         bool Lock { get; set; }
-
         GameEvent Event { get; set; }
-
         GameStatus Status { get; set; }
-
         Unit Destination { get; set; }
-
         Cell Target { get; set; }
 
         IGameplayCommand Command { get; set; }
 
         Team CurrentTurn { get; set; }
+
+        AttackChain CurrentAttackChain { get; set; }
     }
 
 
@@ -35,5 +34,7 @@ namespace Checkers.Interfaces
         public IGameplayCommand Command { get; set; }
 
         public Team CurrentTurn { get; set; } = Team.Red;
+
+        public AttackChain CurrentAttackChain { get; set; }
     }
 }

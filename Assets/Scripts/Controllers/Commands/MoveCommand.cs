@@ -16,8 +16,6 @@ namespace Checkers.Controllers.Commands
 
         public bool HasAvailableMoves => _availableCells.Count > 0;
 
-        private bool _isAttack;
-
         public MoveCommand(Battlefield battlefield, Unit selectedUnit)
         {
             _battlefield = battlefield;
@@ -28,16 +26,6 @@ namespace Checkers.Controllers.Commands
         private void CalculateAvailableMoves()
         {
             _availableCells.Clear();
-
-            var attackCommand = new AttackCommand(_battlefield, _selectedUnit);
-            if (attackCommand.Variants.Any())
-            {
-                _availableCells.AddRange(attackCommand.Variants);
-                _isAttack = true;
-                return;
-            }
-
-            _isAttack = false;
 
             bool isRed = _selectedUnit.Team == Team.Red;
 
@@ -56,13 +44,31 @@ namespace Checkers.Controllers.Commands
 
             foreach (var direction in forwardDirections)
             {
-                if (_battlefield.TryGet(_selectedUnit.CurrentCell, direction, out Cell targetCell))
+                if (_selectedUnit.Type == UnitType.Queen)
                 {
-                    if (targetCell.CurrentUnit == null)
+                    Cell current = _selectedUnit.CurrentCell;
+                    while (_battlefield.TryGet(current, direction, out Cell targetCell))
                     {
-                        _availableCells.Add(targetCell);
+                        if (targetCell.CurrentUnit == null)
+                        {
+                            _availableCells.Add(targetCell);
+                            current = targetCell;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    // TODO: позже добавим логику для атаки через клетку
+                }
+                else
+                {
+                    if (_battlefield.TryGet(_selectedUnit.CurrentCell, direction, out Cell targetCell))
+                    {
+                        if (targetCell.CurrentUnit == null)
+                        {
+                            _availableCells.Add(targetCell);
+                        }
+                    } 
                 }
             }
         }
@@ -75,39 +81,22 @@ namespace Checkers.Controllers.Commands
                 return;
             }
 
-            if (_isAttack)
-            {
-                var attackCommand = new AttackCommand(_battlefield, _selectedUnit);
-                attackCommand.Interact(cell);
-            }
-            else
-            {
                 _selectedUnit.CurrentCell.CurrentUnit = null;
                 _selectedUnit.CurrentCell = cell;
                 cell.CurrentUnit = _selectedUnit;
                 _selectedUnit.MoveVisuals(cell.transform.position + Vector3.up * 1.1f);
                 CheckForPromotion(cell);
-            }
         }
 
         private void CheckForPromotion(Cell cell)
         {
             bool isRed = _selectedUnit.Team == Team.Red;
-            bool isLastRow = isRed
-                ? IsLastRowForRed(cell)
-                : IsLastRowForBlack(cell);
+            bool isLastRow = isRed ? cell.transform.position.z >= 7f : cell.transform.position.z <= -7f;
 
             if (isLastRow && _selectedUnit.Type != UnitType.Queen)
             {
                 _selectedUnit.PromoteToQueen();
             }
         }
-
-        private bool IsLastRowForRed(Cell cell)
-            => cell.transform.position.z == 7f;
-        
-
-        private bool IsLastRowForBlack(Cell cell)
-            => cell.transform.position.z == -7f;
     }
 }

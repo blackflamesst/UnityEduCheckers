@@ -13,11 +13,14 @@ namespace Checkers.Controllers.Commands
 
         public IEnumerable<Cell> Variants => _availableCells;
 
-        public AttackCommand(Battlefield battlefield, Unit selectedUnit)
+        private readonly AttackChain _attackChain;
+
+        public AttackCommand(Battlefield battlefield, Unit selectedUnit, AttackChain chain = null)
         {
             _battlefield = battlefield;
             _selectedUnit = selectedUnit;
             CalculateAvailableAttacks();
+            _attackChain = chain;
         }
 
         private void CalculateAvailableAttacks()
@@ -33,7 +36,7 @@ namespace Checkers.Controllers.Commands
 
             if (_selectedUnit.Type == UnitType.Queen)
             {
-                CalculateQueenAttacks();
+                CalculateQueenAttacks(attackDirections);
                 return;
             }
 
@@ -55,14 +58,8 @@ namespace Checkers.Controllers.Commands
             }
         }
 
-        private void CalculateQueenAttacks()
+        private void CalculateQueenAttacks(NeighbourType[] directions)
         {
-            var directions = new[]
-            {
-                NeighbourType.ForwardLeft, NeighbourType.ForwardRight,
-                NeighbourType.BackwardLeft, NeighbourType.BackwardRight
-            };
-
             foreach (var direction in directions)
             {
                 Cell currentCell = _selectedUnit.CurrentCell;
@@ -85,8 +82,11 @@ namespace Checkers.Controllers.Commands
                     }
                     else if (enemyUnit != null)
                     {
-                        _availableCells.Add(nextCell);
-                        _unitsToKill[nextCell] = enemyUnit;
+                        if (_attackChain == null || !_attackChain.HasVisited(nextCell))
+                        {
+                            _availableCells.Add(nextCell);
+                            _unitsToKill[nextCell] = enemyUnit;
+                        }
                     }
 
                     currentCell = nextCell;
@@ -96,6 +96,8 @@ namespace Checkers.Controllers.Commands
 
         public void Interact(Cell cell)
         {
+            Debug.Log($"Попытка атаки на клетку {cell.name} (Position: {cell.transform.position})");
+
             if (!_availableCells.Contains(cell))
             {
                 Debug.LogWarning("Невозможно атаковать эту клетку!");
@@ -104,9 +106,14 @@ namespace Checkers.Controllers.Commands
 
             if (_unitsToKill.TryGetValue(cell, out Unit enemyUnit))
             {
+                Debug.Log($"Враг найден: {enemyUnit.name}. Уничтожаем.");
                 enemyUnit.Dead();
                 enemyUnit.CurrentCell.CurrentUnit = null;
                 enemyUnit.CurrentCell = null;
+            }
+            else
+            {
+                Debug.LogError("ОШИБКА: В словаре _unitsToKill не найден враг для этой клетки!");
             }
 
             _selectedUnit.CurrentCell.CurrentUnit = null;
@@ -114,28 +121,22 @@ namespace Checkers.Controllers.Commands
             cell.CurrentUnit = _selectedUnit;
             _selectedUnit.MoveVisuals(cell.transform.position + Vector3.up * 1.1f);
 
-            CheckForPromotion(cell);
+            Debug.Log("Шашка перемещена визуально и логически.");
 
-            // TODO: проверить возможность последующей атаки (рекурсивные ходы)
+            _attackChain?.RecordMove(cell);
+
+            CheckForPromotion(cell);
         }
 
         private void CheckForPromotion(Cell cell)
         {
             bool isRed = _selectedUnit.Team == Team.Red;
-            bool isLastRow = isRed
-                ? IsLastRowForRed(cell)
-                : IsLastRowForBlack(cell);
+            bool isLastRow = isRed ? cell.transform.position.z >= 7f : cell.transform.position.z <= -7f;
 
             if (isLastRow && _selectedUnit.Type != UnitType.Queen)
             {
                 _selectedUnit.PromoteToQueen();
             }
         }
-
-        private bool IsLastRowForRed(Cell cell)
-            => cell.transform.position.z == 7f;
-
-        private bool IsLastRowForBlack(Cell cell)
-            => cell.transform.position.z == -7f;
     }
 }

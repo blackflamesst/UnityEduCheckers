@@ -44,21 +44,33 @@ namespace Checkers
             if (_data.Destination != null && _data.Destination.CurrentCell != null)
                 _data.Destination.CurrentCell.SetSelect(_palettes.SelectCell);
 
-            var mat = _data.Status switch
+            Material mat = null;
+            if (_data.Command != null)
             {
-                GameStatus.Move => _palettes.MoveCell,
-                GameStatus.Attack => _palettes.AttackCell,
-                GameStatus.ConfirmMove => _palettes.ConfirmCell,
-                GameStatus.ConfirmAttack => _palettes.ConfirmCell,
-                _ => default(Material)
-            };
+                if (_data.CurrentAttackChain != null)
+                {
+                    mat = _palettes.AttackCell;
+                }
+                else
+                {
+                    mat = _data.Status switch
+                    {
+                        GameStatus.Move => _palettes.MoveCell,
+                        GameStatus.Attack => _palettes.AttackCell,
+                        GameStatus.ConfirmMove => _palettes.MoveCell,
+                        GameStatus.ConfirmAttack => _palettes.ConfirmCell,
+                        _ => default(Material)
+                    };
+                }
 
-            if (mat != null && _data.Command != null)
-                foreach (var cell in _data.Command.Variants)
-                    cell.SetSelect(mat);
 
-            if (_data.Target != null && _data.Destination != null)
-                _data.Target.SetSelect(_palettes.ConfirmCell);
+                if (mat != null && _data.Command != null)
+                    foreach (var cell in _data.Command.Variants)
+                        cell.SetSelect(mat);
+
+                if (_data.Target != null && _data.Destination != null)
+                    _data.Target.SetSelect(_palettes.ConfirmCell);
+            }
         }
 
         public Battlefield(SignalBus signal, ISharedData data, CellPaletteSettings palettes)
